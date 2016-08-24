@@ -3,6 +3,7 @@
  * Application File
  */
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
 var express = require('express');
 
 mongoose.Promise = global.Promise;
@@ -10,6 +11,8 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/meme-gen');
 
 var db = mongoose.connection;
+
+autoIncrement.initialize(db);
 
 db.on('err', console.error.bind(console, 'console error:'));
 db.once('open', function() {
@@ -29,6 +32,10 @@ var KindSchema = mongoose.Schema({
   'name': 'String',
   'url': 'String'
 });
+
+ScenarioSchema.plugin(autoIncrement.plugin, 'Scenario');
+EventSchema.plugin(autoIncrement.plugin, 'Event');
+KindSchema.plugin(autoIncrement.plugin, 'Kind');
 
 var Scenario = mongoose.model('Scenario', ScenarioSchema);
 var Event = mongoose.model('Event', EventSchema);
@@ -263,6 +270,7 @@ app.get('/kind/:id', kindView);
 
 // DOTO
 // app.get('/meme/:scenarioId/:eventId', memeView);
+// app.get('/meme/:scenarioId/:eventId/:kindId', memeView);
 
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'));
