@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Event</title>
+  </head>
+  <body>
+    <h1>Event</h1>
+    <div class="">
+      <a href="/kind">Kind</a>
+      <a href="/scenario">Scenario</a>
+      <a href="/event">Event</a>
+    </div>
+    <p>Value: <%= event.value %></p>
+    <p>ID: <%=event.id %></p>
+    <% if(kind) { %>
+      <p>Kind: <%= kind.name %></p>
+      <p>Kind ID: <%= kind.id %></p>
+      <img src="<%= kind.url %>" alt="<%= kind.name %>" />
+    <% } %>
+  </body>
+</html>
