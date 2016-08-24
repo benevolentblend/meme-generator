@@ -2,45 +2,9 @@
  * app.js
  * Application File
  */
-var mongoose = require('mongoose');
-var autoIncrement = require('mongoose-auto-increment');
+
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
-
-mongoose.Promise = global.Promise;
-
-mongoose.connect('mongodb://localhost/meme-gen');
-
-var db = mongoose.connection;
-
-autoIncrement.initialize(db);
-
-db.on('err', console.error.bind(console, 'console error:'));
-db.once('open', function() {
-  console.log('Mongodb connected.');
-});
-
-var ScenarioSchema = mongoose.Schema({
-  'value': 'String'
-});
-
-var EventSchema = mongoose.Schema({
-  'value': 'String',
-  'kind': 'String'
-});
-
-var KindSchema = mongoose.Schema({
-  'name': 'String',
-  'url': 'String'
-});
-
-ScenarioSchema.plugin(autoIncrement.plugin, 'Scenario');
-EventSchema.plugin(autoIncrement.plugin, 'Event');
-KindSchema.plugin(autoIncrement.plugin, 'Kind');
-
-var Scenario = mongoose.model('Scenario', ScenarioSchema);
-var Event = mongoose.model('Event', EventSchema);
-var Kind = mongoose.model('Kind', KindSchema);
 
 var app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -53,8 +17,10 @@ app.get('/', function(req, res) {
   res.send('Hello World, ben here!');
 });
 
+var models = require('./database');
+
 var scenarioRoot = function(req, res) {
-  Scenario.find(function(err, scenarios) {
+  models.Scenario.find(function(err, scenarios) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -78,7 +44,7 @@ var scenarioCreate = function(req, res) {
 
   if(!value) return res.sendStatus(400);
 
-  var scenario = new Scenario({'value': value});
+  var scenario = new models.Scenario({'value': value});
   scenario.save(function(err) {
     if(err) {
       console.error(err);
@@ -99,7 +65,7 @@ var scenarioView = function(req, res) {
 
   if(!id) return res.sendStatus(404);
 
-  Scenario.findOne({'_id': id}, function(err, scenario) {
+  models.Scenario.findOne({'_id': id}, function(err, scenario) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -117,7 +83,7 @@ var scenarioView = function(req, res) {
 }
 
 var eventRoot = function(req, res) {
-  Event.find(function(err, events) {
+  models.Event.find(function(err, events) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -142,7 +108,7 @@ var eventCreate = function(req, res) {
 
   if(!value || !kind) return res.sendStatus(400);
 
-  var event = new Event({'value': value, 'kind': kind});
+  var event = new models.Event({'value': value, 'kind': kind});
   event.save(function(err) {
     if(err) {
       console.error(err);
@@ -164,7 +130,7 @@ var eventView = function(req, res) {
 
   if(!id) return res.sendStatus(404);
 
-  Event.findOne({'_id': id}, function(err, event) {
+  models.Event.findOne({'_id': id}, function(err, event) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -182,7 +148,7 @@ var eventView = function(req, res) {
       return res.render('event/view.ejs', {event: data});
     }
 
-    Kind.findOne({'_id':  event.kind}, function(err, kind) {
+    models.Kind.findOne({'_id':  event.kind}, function(err, kind) {
       if(err) {
         console.error(err);
         return res.sendStatus(500);
@@ -196,7 +162,7 @@ var eventView = function(req, res) {
 
 
 var kindRoot = function(req, res) {
-  Kind.find(function(err, kinds) {
+  models.Kind.find(function(err, kinds) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -221,7 +187,7 @@ var kindCreate = function(req, res) {
 
   if(!name || !url) return res.sendStatus(400);
 
-  var kind = new Kind({'name': name, 'url': url});
+  var kind = new models.Kind({'name': name, 'url': url});
   kind.save(function(err) {
     if(err) {
       console.error(err);
@@ -243,7 +209,7 @@ var kindView = function(req, res) {
 
   if(!id) return res.sendStatus(404);
 
-  Kind.findOne({'_id': id}, function(err, kind) {
+  models.Kind.findOne({'_id': id}, function(err, kind) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -269,7 +235,7 @@ var memeView = function(req, res) {
     return res.sendStatus(400);
   }
 
-  Scenario.findOne({'_id': scenarioId}, function(err, scenario) {
+  models.Scenario.findOne({'_id': scenarioId}, function(err, scenario) {
     if(err) {
       console.error(err);
       return res.sendStatus(500);
@@ -277,7 +243,7 @@ var memeView = function(req, res) {
 
     if(!scenario) return res.sendStatus(404);
 
-    Event.findOne({'_id': eventId}, function(err, event) {
+    models.Event.findOne({'_id': eventId}, function(err, event) {
       if(err) {
         console.error(err);
         return res.sendStatus(500);
@@ -287,7 +253,7 @@ var memeView = function(req, res) {
 
       if(!kindId) kindId = event.kind;
 
-      Kind.findOne({'_id': kindId}, function(err, kind) {
+      models.Kind.findOne({'_id': kindId}, function(err, kind) {
         if(err) {
           console.error(err);
           return res.sendStatus(500);
