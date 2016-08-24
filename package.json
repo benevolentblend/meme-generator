@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "express": "^4.13.3",
+    "express-ejs-layouts": "^2.2.0",
     "mongoose": "^4.5.10",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-autoincrement": "^1.0.0"

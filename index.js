@@ -5,6 +5,7 @@
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 var express = require('express');
+var expressLayouts = require('express-ejs-layouts');
 
 mongoose.Promise = global.Promise;
 
@@ -44,6 +45,8 @@ var Kind = mongoose.model('Kind', KindSchema);
 var app = express();
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.set("layout extractScripts", true);
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {

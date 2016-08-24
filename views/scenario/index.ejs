@@ -1,22 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Scenario</title>
-  </head>
-  <body>
-    <h1>Scenarios</h1>
-    <div class="">
-      <a href="/kind">Kind</a>
-      <a href="/scenario">Scenario</a>
-      <a href="/event">Event</a>
-    </div>
-    <ul>
-      <% for(var i in scenarios) { %>
-        <li>
-          <a href="/scenario/<%= scenarios[i].id %>"><%= scenarios[i].value %></a>
-        </li>
-      <% } %>
-    </ul>
-  </body>
-</html>
+<ul>
+  <% for(var i in scenarios) { %>
+    <li>
+      <a href="/scenario/<%= scenarios[i].id %>"><%= scenarios[i].value %></a>
+    </li>
+  <% } %>
+</ul>

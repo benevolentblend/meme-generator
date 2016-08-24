@@ -1,22 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Kind</title>
-  </head>
-  <body>
-    <h1>Kinds</h1>
-    <div class="">
-      <a href="/kind">Kind</a>
-      <a href="/scenario">Scenario</a>
-      <a href="/event">Event</a>
-    </div>
-    <ul>
-      <% for(var i in kinds) { %>
-        <li>
-          <a href="/kind/<%= kinds[i].id %>"><%= kinds[i].name %></a>
-        </li>
-      <% } %>
-    </ul>
-  </body>
-</html>
+<ul>
+  <% for(var i in kinds) { %>
+    <li>
+      <a href="/kind/<%= kinds[i].id %>"><%= kinds[i].name %></a>
+    </li>
+  <% } %>
+</ul>
