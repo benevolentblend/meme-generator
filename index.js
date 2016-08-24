@@ -258,6 +258,46 @@ var kindView = function(req, res) {
   });
 }
 
+var memeView = function(req, res) {
+  var scenarioId = req.params.scenarioId, eventId = req.params.eventId,
+    kindId = req.params.kindId;
+
+  if(!scenarioId || !eventId) {
+    return res.sendStatus(400);
+  }
+
+  Scenario.findOne({'_id': scenarioId}, function(err, scenario) {
+    if(err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+
+    if(!scenario) return res.sendStatus(404);
+
+    Event.findOne({'_id': eventId}, function(err, event) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      if(!event || (!event.kind && !kindId)) return res.sendStatus(404);
+
+      if(!kindId) kindId = event.kind;
+
+      Kind.findOne({'_id': kindId}, function(err, kind) {
+        if(err) {
+          console.error(err);
+          return res.sendStatus(500);
+        }
+
+        if(!kind) return res.sendStatus(404);
+
+        res.render('meme/view.ejs', {'scenario': scenario, 'event': event, 'kind': kind});
+      });
+    });
+  });
+}
+
 app.get('/scenario', scenarioRoot);
 app.get('/scenario/create', scenarioCreate);
 app.get('/scenario/:id', scenarioView);
@@ -268,9 +308,24 @@ app.get('/kind', kindRoot);
 app.get('/kind/create', kindCreate);
 app.get('/kind/:id', kindView);
 
-// DOTO
-// app.get('/meme/:scenarioId/:eventId', memeView);
-// app.get('/meme/:scenarioId/:eventId/:kindId', memeView);
+app.get('/meme/:scenarioId/:eventId', memeView);
+app.get('/meme/:scenarioId/:eventId/:kindId', memeView);
+
+app.use(function(req, res, next){
+  res.status(404);
+
+  if (req.accepts('html')) {
+    res.render('404');
+    return;
+  }
+
+  if (req.accepts('json')) {
+    res.send({ error: 'Not found' });
+    return;
+  }
+
+  res.type('txt').send('Not found');
+});
 
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'));
