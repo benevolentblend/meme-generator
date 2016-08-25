@@ -25,7 +25,7 @@ module.exports = function(app, models) {
   }
 
   var kindCreate = function(req, res) {
-    var name = req.query.name, url = req.query.url;
+    var name = req.body.name, url = req.body.url;
 
     if(!name || !url) return res.sendStatus(400);
 
@@ -71,6 +71,6 @@ module.exports = function(app, models) {
 
   app.get('/kind', kindRoot);
   app.get('/kind/new', kindNew);
-  app.get('/kind/create', kindCreate);
+  app.post('/kind/create', kindCreate);
   app.get('/kind/:id(\\d+)/', kindView);
 }
