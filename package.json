@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.15.2",
+    "ejs": "^2.5.1",
     "express": "^4.13.3",
     "express-ejs-layouts": "^2.2.0",
     "mongoose": "^4.5.10",
