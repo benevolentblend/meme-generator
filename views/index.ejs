@@ -86,8 +86,7 @@
         kindId = $this.data('kind');
         kindList.removeClass('active');
         kindList.filter('[data-id="' + kindId + '"]').addClass('active');
-
-
+        kindId = '';
       }
 
       updateURL();
