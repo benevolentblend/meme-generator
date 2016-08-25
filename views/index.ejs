@@ -47,7 +47,7 @@
     var senarioList = $('#scenario-list li'), eventList = $('#event-list li'),
       kindList = $('#kind-list li'), memeURL = $('#meme-url');
 
-    var url = location.origin, senarioId = '', eventId = '', kindId = '';
+    var url = location.origin, senarioId = '', eventId = '', kindId = '', safeKind = false;
 
     var updateURL = function() {
       var fullURL = url + '/meme';
@@ -57,7 +57,7 @@
       if(senarioId !== '' && eventId !== '' && kindId !== '') fullURL += '/' + kindId;
 
       memeURL.html(fullURL);
-      if(senarioId !== '' && eventId !== '' && kindId !== '') {
+      if(senarioId !== '' && eventId !== '' && (kindId !== '' || safeKind)) {
         memeURL.prop('target', '_blank');
         memeURL.prop('href', fullURL);
       }
@@ -84,9 +84,13 @@
 
       if($this.data('kind') !== '') {
         kindId = $this.data('kind');
+        safeKind = true;
         kindList.removeClass('active');
         kindList.filter('[data-id="' + kindId + '"]').addClass('active');
         kindId = '';
+      }
+      else {
+        safeKind = false;
       }
 
       updateURL();
