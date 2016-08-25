@@ -1,6 +1,6 @@
 <p>Value: <%= event.value %></p>
 <p>ID: <%=event.id %></p>
-<% if(kind) { %>
+<% if(typeof kind != 'undefined') { %>
   <p>Kind: <%= kind.name %></p>
   <p>Kind ID: <%= kind.id %></p>
   <img src="<%= kind.url %>" alt="<%= kind.name %>" />

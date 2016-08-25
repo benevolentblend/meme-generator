@@ -1,0 +1,26 @@
+{
+  "name": "meme-generator",
+  "description": "A simple web app to generate random and static memes.",
+  "main": "app.js",
+  "authors": [
+    "Benjamin Thomas <benjamin@network.net>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "homepage": "https://github.com/chuck-aka-ben/meme-generator",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}

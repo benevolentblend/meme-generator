@@ -1,18 +1,110 @@
-<h1>Scenario</h1>
-<ul>
-  <% for(var i in scenarios) { %>
-    <li><a href="/scenario/<%= scenarios[i].id %>"><%= scenarios[i].value %></a></li>
-  <% } %>
-</ul>
-<h1>Event</h1>
-<ul>
-  <% for(var i in events) { %>
-    <li><a href="/event/<%= events[i].id %>"><%= events[i].value %></a></li>
-  <% } %>
-</ul>
-<h1>Kind</h1>
-<ul>
-  <% for(var i in kinds) { %>
-    <li><a href="/kind/<%= kinds[i].id %>"><%= kinds[i].name %></a></li>
-  <% } %>
-</ul>
+<h1 class="page-header">Build a Meme</h1>
+<div class="row">
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Scenario</h1>
+      </div>
+      <ul id="scenario-list" class="list-group">
+        <% for(var i in scenarios) { %>
+          <li class="list-group-item" data-id="<%= scenarios[i].id %>"><%= scenarios[i].value %></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Event</h1>
+      </div>
+      <ul id="event-list" class="list-group">
+        <% for(var i in events) { %>
+          <li class="list-group-item" data-id="<%= events[i].id %>" data-kind="<%= events[i].kind %>"><%= events[i].value %></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Kind</h1>
+      </div>
+      <ul id="kind-list" class="list-group">
+        <% for(var i in kinds) { %>
+          <li class="list-group-item" data-id="<%= kinds[i].id %>"><%= kinds[i].name %></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <h3 class="text-center">Meme URL</h3>
+    <p><a target="_blank" id="meme-url" href="#">meme/</a></p>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+
+    var senarioList = $('#scenario-list li'), eventList = $('#event-list li'),
+      kindList = $('#kind-list li'), memeURL = $('#meme-url');
+
+    var url = location.origin, senarioId = '', eventId = '', kindId = '';
+
+    var updateURL = function() {
+      var fullURL = url + '/meme';
+
+      if(senarioId !== '') fullURL += '/' + senarioId;
+      if(senarioId !== '' && eventId !== '') fullURL += '/' + eventId;
+      if(senarioId !== '' && eventId !== '' && kindId !== '') fullURL += '/' + kindId;
+
+      memeURL.html(fullURL);
+      if(senarioId !== '' && eventId !== '' && kindId !== '') {
+        memeURL.prop('target', '_blank');
+        memeURL.prop('href', fullURL);
+      }
+      else {
+        memeURL.prop('target', '_self');
+        memeURL.prop('href', '#');
+      }
+    }
+
+    var senarioItemClick = function (event) {
+      var $this = $(this);
+      senarioList.removeClass('active');
+      $this.addClass('active');
+      senarioId = $this.data('id');
+      updateURL();
+
+    }
+
+    var eventItemClick = function (event) {
+      var $this = $(this);
+      eventList.removeClass('active');
+      $this.addClass('active');
+      eventId = $this.data('id');
+
+      if($this.data('kind') !== '') {
+        kindId = $this.data('kind');
+        kindList.removeClass('active');
+        kindList.filter('[data-id="' + kindId + '"]').addClass('active');
+
+
+      }
+
+      updateURL();
+    }
+
+    var kindItemClick = function (event) {
+      var $this = $(this);
+      kindList.removeClass('active');
+      $this.addClass('active');
+      kindId = $this.data('id');
+      updateURL();
+    }
+
+    senarioList.click(senarioItemClick);
+    eventList.click(eventItemClick);
+    kindList.click(kindItemClick);
+
+    updateURL();
+  });
+</script>

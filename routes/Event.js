@@ -34,7 +34,7 @@ module.exports = function(app, models) {
   var eventCreate = function(req, res) {
     var value = req.body.value, kind = req.body.kind;
 
-    if(!value || !kind) return res.sendStatus(400);
+    if(!value) return res.sendStatus(400);
 
     var event = new models.Event({'value': value, 'kind': kind});
     event.save(function(err) {

@@ -1,20 +1,21 @@
 <h1>Create Event</h1>
 <% if(kinds.length != 0) { %>
   <form class="" action="/event/create" method="post">
-    <div class="">
+    <div class="form-group">
       <label>Value</label>
-      <input type="text" name="value" value="">
+      <input class="form-control" type="text" name="value" placeholder="Your spicy event here...">
     </div>
-    <div class="">
+    <div class="form-group">
       <label>Kind</label>
-      <select class="" name="kind">
+      <select class="form-control" name="kind">
+        <option value="">(None)</option>
         <% for(var i in kinds) { %>
           <option value="<%= kinds[i].id %>"><%= kinds[i].name %></option>
         <% } %>
       </select>
     </div>
-    <div class="">
-      <input type="submit" value="Create">
+    <div class="form-group">
+      <input class="btn btn-primary" type="submit" value="Create">
     </div>
   </form>
 <% } %>
