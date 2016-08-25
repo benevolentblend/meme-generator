@@ -1,21 +1,21 @@
 /**
  * app.js
+ *
  * Application File
  */
 
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
+var bodyParser = require('body-parser');
 
 var app = express();
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'ejs');
-app.use(expressLayouts);
 app.set("layout extractScripts", true);
+app.use(expressLayouts);
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(express.static(__dirname + '/public'));
-
-app.get('/', function(req, res) {
-  res.send('Hello World, ben here!');
-});
 
 var models = require('./database');
 
@@ -30,7 +30,7 @@ app.use(function(req, res, next){
   }
 
   if (req.accepts('json')) {
-    res.send({ error: 'Not found' });
+    res.send({ 'error': 'Not found' });
     return;
   }
 

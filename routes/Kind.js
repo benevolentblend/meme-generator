@@ -16,8 +16,12 @@ module.exports = function(app, models) {
         };
       }
 
-      res.render('kind/index.ejs', {kinds: data});
+      res.render('kind/index.ejs', {'kinds': data});
     });
+  }
+
+  var kindNew = function(req, res) {
+    res.render('kind/new');
   }
 
   var kindCreate = function(req, res) {
@@ -61,11 +65,12 @@ module.exports = function(app, models) {
         'id': kind._id
       };
 
-      res.render('kind/view.ejs', {kind: data});
+      res.render('kind/view.ejs', {'kind': data});
     });
   }
 
   app.get('/kind', kindRoot);
+  app.get('/kind/new', kindNew);
   app.get('/kind/create', kindCreate);
-  app.get('/kind/:id', kindView);
+  app.get('/kind/:id(\\d+)/', kindView);
 }

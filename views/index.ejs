@@ -1,0 +1,18 @@
+<h1>Scenario</h1>
+<ul>
+  <% for(var i in scenarios) { %>
+    <li><a href="/scenario/<%= scenarios[i].id %>"><%= scenarios[i].value %></a></li>
+  <% } %>
+</ul>
+<h1>Event</h1>
+<ul>
+  <% for(var i in events) { %>
+    <li><a href="/event/<%= events[i].id %>"><%= events[i].value %></a></li>
+  <% } %>
+</ul>
+<h1>Kind</h1>
+<ul>
+  <% for(var i in kinds) { %>
+    <li><a href="/kind/<%= kinds[i].id %>"><%= kinds[i].name %></a></li>
+  <% } %>
+</ul>

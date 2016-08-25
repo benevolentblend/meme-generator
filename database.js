@@ -9,7 +9,7 @@ var autoIncrement = require('mongoose-auto-increment');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost/meme-gen');
+mongoose.connect('mongodb://' + (process.env.DATABASE || 'localhost') + '/meme-gen');
 
 var db = mongoose.connection;
 

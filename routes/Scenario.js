@@ -19,8 +19,12 @@ module.exports = function(app, models) {
     });
   }
 
+  var scenarioNew = function(req, res) {
+    res.render('scenario/new');
+  }
+
   var scenarioCreate = function(req, res) {
-    var value = req.query.value;
+    var value = req.body.value;
 
     if(!value) return res.sendStatus(400);
 
@@ -58,12 +62,13 @@ module.exports = function(app, models) {
         'id': scenario._id
       };
 
-      res.render('scenario/view.ejs', {scenario: data});
+      res.render('scenario/view.ejs', {'scenario': data});
     });
   }
 
 
   app.get('/scenario', scenarioRoot);
-  app.get('/scenario/create', scenarioCreate);
-  app.get('/scenario/:id', scenarioView);
+  app.get('/scenario/new', scenarioNew);
+  app.post('/scenario/create', scenarioCreate);
+  app.get('/scenario/:id(\\d+)/', scenarioView);
 };

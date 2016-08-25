@@ -16,12 +16,23 @@ module.exports = function(app, models) {
         };
       }
 
-      res.render('event/index.ejs', {events: data});
+      res.render('event/index.ejs', {'events': data});
+    });
+  }
+
+  var eventNew = function(req, res) {
+    models.Kind.find({}, function(err, kinds) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.render('event/new', {'kinds': kinds});
     });
   }
 
   var eventCreate = function(req, res) {
-    var value = req.query.value, kind = req.query.kind;
+    var value = req.body.value, kind = req.body.kind;
 
     if(!value || !kind) return res.sendStatus(400);
 
@@ -62,7 +73,7 @@ module.exports = function(app, models) {
       };
 
       if(!data.kind) {
-        return res.render('event/view.ejs', {event: data});
+        return res.render('event/view.ejs', {'event': data});
       }
 
       models.Kind.findOne({'_id':  event.kind}, function(err, kind) {
@@ -71,13 +82,14 @@ module.exports = function(app, models) {
           return res.sendStatus(500);
         }
 
-        if(!kind) return res.render('event/view.ejs', {event: data});
-        else res.render('event/view.ejs', {event: data, kind: kind});
+        if(!kind) return res.render('event/view.ejs', {'event': data});
+        else res.render('event/view.ejs', {'event': data, 'kind': kind});
       });
     });
   }
 
   app.get('/event', eventRoot);
-  app.get('/event/create', eventCreate);
-  app.get('/event/:id', eventView);
+  app.get('/event/new', eventNew);
+  app.post('/event/create', eventCreate);
+  app.get('/event/:id(\\d+)/', eventView);
 }
