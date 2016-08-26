@@ -1,3 +1,6 @@
+var _ = require('lodash');
+var request = require('request');
+
 module.exports = function(app, models) {
 
   var rootIndex = function(req, res) {
@@ -55,7 +58,81 @@ module.exports = function(app, models) {
     });
   }
 
+  var rootRandomMeme = function(req, res) {
+    models.Scenario.find({}, function(err, scenarios) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      models.Event.find({}, function(err, events) {
+        if(err) {
+          console.error(err);
+          return res.sendStatus(500);
+        }
+
+        models.Kind.find({}, function(err, kinds) {
+          if(err) {
+            console.error(err);
+            return res.sendStatus(500);
+          }
+
+          var scenarioId = _.chain(scenarios).map('id').sample().value();
+          var eventId = _.chain(events).map('id').sample().value();
+          var kindId = _.chain(kinds).map('id').sample().value();
+
+          var fullUrl = req.protocol + '://' + req.get('host');
+
+          var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId + '/' + kindId;
+
+          request.get(uri, function(err, response, body) {
+            if(err) {
+              console.error(err);
+              return res.sendStatus(500);
+            }
+
+            res.send(body);
+          });
+        });
+      })
+    });
+  }
+
+  var rootSpicyMeme = function(req, res) {
+    models.Scenario.find({}, function(err, scenarios) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      models.Event.find({kind: {'$ne': ''}}, function(err, events) {
+        if(err) {
+          console.error(err);
+          return res.sendStatus(500);
+        }
+
+        var scenarioId = _.chain(scenarios).map('id').sample().value();
+        var eventId = _.chain(events).map('id').sample().value();
+        var fullUrl = req.protocol + '://' + req.get('host');
+        var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId;
+
+        console.log(uri);
+
+        request.get(uri, function(err, response, body) {
+          if(err) {
+            console.error(err);
+            return res.sendStatus(500);
+          }
+
+          res.send(body);
+        });
+      })
+    });
+  }
+
   app.get('/', rootIndex);
+  app.get('/randommeme', rootRandomMeme);
+  app.get('/spicymeme', rootSpicyMeme);
 
   require('./Kind')(app, models);
   require('./Scenario')(app, models);
