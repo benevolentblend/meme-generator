@@ -99,7 +99,6 @@ module.exports = function(app, models) {
   }
 
   var rootSpicyMeme = function(req, res) {
-    var hipchat = req.query.hipchat;
     models.Scenario.find({}, function(err, scenarios) {
       if(err) {
         console.error(err);
@@ -117,30 +116,49 @@ module.exports = function(app, models) {
         var fullUrl = req.protocol + '://' + req.get('host');
         var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId;
 
-        if(hipchat) {
-          return res.json({
-            'color': 'yellow',
-            'message': 'spicymeme: ' + uri,
-            'notify': false,
-            'message_format': 'text'
-          });
-        }
-        else {
-          return request.get(uri, function(err, response, body) {
-            if(err) {
-              console.error(err);
-              return res.sendStatus(500);
-            }
+        return request.get(uri, function(err, response, body) {
+          if(err) {
+            console.error(err);
+            return res.sendStatus(500);
+          }
 
-            res.send(body);
-          });
+          res.send(body);
+        });
+      });
+    });
+  }
+
+  var rootSpicyMemeHipchat = function(req, res) {
+    models.Scenario.find({}, function(err, scenarios) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      models.Event.find({kind: {'$ne': ''}}, function(err, events) {
+        if(err) {
+          console.error(err);
+          return res.sendStatus(500);
         }
+
+        var scenarioId = _.chain(scenarios).map('id').sample().value();
+        var eventId = _.chain(events).map('id').sample().value();
+        var fullUrl = req.protocol + '://' + req.get('host');
+        var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId;
+
+        return res.json({
+          'color': 'yellow',
+          'message': 'spicymeme: ' + uri,
+          'notify': false,
+          'message_format': 'text'
+        });
       });
     });
   }
 
   app.get('/', rootIndex);
   app.get('/randommeme', rootRandomMeme);
+  app.post('/spicymeme', rootSpicyMemeHipchat);
   app.get('/spicymeme', rootSpicyMeme);
 
   require('./Kind')(app, models);
