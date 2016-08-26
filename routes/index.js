@@ -99,6 +99,7 @@ module.exports = function(app, models) {
   }
 
   var rootSpicyMeme = function(req, res) {
+    var hipchat = req.query.hipchat;
     models.Scenario.find({}, function(err, scenarios) {
       if(err) {
         console.error(err);
@@ -116,17 +117,25 @@ module.exports = function(app, models) {
         var fullUrl = req.protocol + '://' + req.get('host');
         var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId;
 
-        console.log(uri);
+        if(hipchat) {
+          return res.json({
+            'color': 'yellow',
+            'message': 'spicymeme: ' + uri,
+            'notify': false,
+            'message_format': 'text'
+          });
+        }
+        else {
+          return request.get(uri, function(err, response, body) {
+            if(err) {
+              console.error(err);
+              return res.sendStatus(500);
+            }
 
-        request.get(uri, function(err, response, body) {
-          if(err) {
-            console.error(err);
-            return res.sendStatus(500);
-          }
-
-          res.send(body);
-        });
-      })
+            res.send(body);
+          });
+        }
+      });
     });
   }
 
