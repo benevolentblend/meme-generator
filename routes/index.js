@@ -140,7 +140,7 @@ module.exports = function(app, models) {
 
           return res.json({
             'color': 'yellow',
-            'message': 'spicymeme: ' + uri,
+            'message': 'randommeme: ' + uri,
             'notify': false,
             'message_format': 'text'
           });

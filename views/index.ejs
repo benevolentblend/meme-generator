@@ -52,9 +52,9 @@
     var updateURL = function() {
       var fullURL = url + '/meme';
 
-      if(senarioId !== '') fullURL += '/' + senarioId;
-      if(senarioId !== '' && eventId !== '') fullURL += '/' + eventId;
-      if(senarioId !== '' && eventId !== '' && kindId !== '') fullURL += '/' + kindId;
+      if(senarioId !== '') fullURL += '-' + senarioId;
+      if(senarioId !== '' && eventId !== '') fullURL += '-' + eventId;
+      if(senarioId !== '' && eventId !== '' && kindId !== '') fullURL += '-' + kindId;
 
       memeURL.html(fullURL);
       if(senarioId !== '' && eventId !== '' && (kindId !== '' || safeKind)) {

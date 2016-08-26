@@ -1,3 +1,5 @@
+var caption = require('caption');
+
 module.exports = function(app, models) {
   var memeView = function(req, res) {
     var scenarioId = req.params.scenarioId, eventId = req.params.eventId,
@@ -33,12 +35,25 @@ module.exports = function(app, models) {
 
           if(!kind) return res.sendStatus(404);
 
-          res.render('meme/view.ejs', {'scenario': scenario, 'event': event, 'kind': kind});
+          caption.url(kind.url, {
+            'caption': scenario.value,
+            'bottomCaption': event.value,
+            'minWidth': 700
+          }, function(err, captionedImage) {
+            if(err) {
+              console.error(err);
+              return res.sendStatus(500);
+            }
+
+            console.log(captionedImage);
+
+            res.type('jpg').sendFile(captionedImage);
+          });
         });
       });
     });
   }
 
-  app.get('/meme/:scenarioId/:eventId', memeView);
-  app.get('/meme/:scenarioId/:eventId/:kindId', memeView);
+  app.get('/meme-:scenarioId(\\d+)-:eventId(\\d+)', memeView);
+  app.get('/meme-:scenarioId(\\d+)-:eventId(\\d+)-:kindId(\\d+)', memeView);
 }
