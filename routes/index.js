@@ -169,7 +169,7 @@ module.exports = function(app, models) {
         var scenarioId = _.chain(scenarios).map('id').sample().value();
         var eventId = _.chain(events).map('id').sample().value();
         var fullUrl = req.protocol + '://' + req.get('host');
-        var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId;
+        var uri = fullUrl + '/meme-' + scenarioId + '-' + eventId + '.jpg';
 
         return request.get(uri, function(err, response, body) {
           if(err) {
@@ -208,7 +208,7 @@ module.exports = function(app, models) {
         var scenarioId = _.chain(scenarios).map('id').sample().value();
         var eventId = _.chain(events).map('id').sample().value();
         var fullUrl = req.protocol + '://' + req.get('host');
-        var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId;
+        var uri = fullUrl + '/meme-' + scenarioId + '-' + eventId + '.jpg';
 
         return res.json({
           'color': 'yellow',
