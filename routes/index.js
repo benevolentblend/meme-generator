@@ -87,7 +87,7 @@ module.exports = function(app, models) {
 
           var fullUrl = req.protocol + '://' + req.get('host');
 
-          var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId + '/' + kindId;
+          var uri = fullUrl + '/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
 
           request.get(uri, function(err, response, body) {
             if(err) {
@@ -136,13 +136,13 @@ module.exports = function(app, models) {
 
           var fullUrl = req.protocol + '://' + req.get('host');
 
-          var uri = fullUrl + '/meme/' + scenarioId + '/' + eventId + '/' + kindId;
+          var uri = fullUrl + '/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
 
           return res.json({
             'color': 'yellow',
-            'message': 'randommeme: ' + uri,
+            'message': '<img alt="randommeme" src="' + uri + '">',
             'notify': false,
-            'message_format': 'text'
+            'message_format': 'html'
           });
         });
       })
@@ -212,9 +212,9 @@ module.exports = function(app, models) {
 
         return res.json({
           'color': 'yellow',
-          'message': 'spicymeme: ' + uri,
+          'message': '<img alt="randommeme" src="' + uri + '">',
           'notify': false,
-          'message_format': 'text'
+          'message_format': 'html'
         });
       });
     });

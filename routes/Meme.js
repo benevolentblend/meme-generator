@@ -54,6 +54,6 @@ module.exports = function(app, models) {
     });
   }
 
-  app.get('/meme-:scenarioId(\\d+)-:eventId(\\d+)', memeView);
-  app.get('/meme-:scenarioId(\\d+)-:eventId(\\d+)-:kindId(\\d+)', memeView);
+  app.get('/meme-:scenarioId(\\d+)-:eventId(\\d+)(.jpg)?', memeView);
+  app.get('/meme-:scenarioId(\\d+)-:eventId(\\d+)-:kindId(\\d+)(.jpg)?', memeView);
 }
