@@ -56,6 +56,8 @@
       if(senarioId !== '' && eventId !== '') fullURL += '-' + eventId;
       if(senarioId !== '' && eventId !== '' && kindId !== '') fullURL += '-' + kindId;
 
+      fullURL += '.jpg';
+
       memeURL.html(fullURL);
       if(senarioId !== '' && eventId !== '' && (kindId !== '' || safeKind)) {
         memeURL.prop('target', '_blank');

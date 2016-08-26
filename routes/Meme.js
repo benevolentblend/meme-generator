@@ -1,9 +1,9 @@
 var caption = require('caption');
-
+var fileExists = require('file-exists');
 module.exports = function(app, models) {
   var memeView = function(req, res) {
     var scenarioId = req.params.scenarioId, eventId = req.params.eventId,
-      kindId = req.params.kindId;
+      kindId = req.params.kindId, cached= req.query.cached;
 
     if(!scenarioId || !eventId) {
       return res.sendStatus(400);
@@ -35,17 +35,23 @@ module.exports = function(app, models) {
 
           if(!kind) return res.sendStatus(404);
 
+          var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
+
+          if(fileExists(outputFile) && !cached) {
+            return res.type('jpg').sendFile(outputFile);
+          }
+
           caption.url(kind.url, {
             'caption': scenario.value,
             'bottomCaption': event.value,
-            'minWidth': 700
+            'outputFile': outputFile,
           }, function(err, captionedImage) {
             if(err) {
               console.error(err);
               return res.sendStatus(500);
             }
 
-            console.log(captionedImage);
+            console.log('Generating image:' + captionedImage);
 
             res.type('jpg').sendFile(captionedImage);
           });

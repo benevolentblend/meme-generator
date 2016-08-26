@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var request = require('request');
 
 module.exports = function(app, models) {
 
@@ -89,14 +88,7 @@ module.exports = function(app, models) {
 
           var uri = fullUrl + '/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
 
-          request.get(uri, function(err, response, body) {
-            if(err) {
-              console.error(err);
-              return res.sendStatus(500);
-            }
-
-            res.send(body);
-          });
+          res.render('meme/view', {'memeURL': uri});
         });
       })
     });
@@ -171,14 +163,7 @@ module.exports = function(app, models) {
         var fullUrl = req.protocol + '://' + req.get('host');
         var uri = fullUrl + '/meme-' + scenarioId + '-' + eventId + '.jpg';
 
-        return request.get(uri, function(err, response, body) {
-          if(err) {
-            console.error(err);
-            return res.sendStatus(500);
-          }
-
-          res.send(body);
-        });
+        res.render('meme/view', {'memeURL': uri});
       });
     });
   }
