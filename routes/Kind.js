@@ -109,7 +109,14 @@ module.exports = function(app, models) {
         return res.sendStatus(500);
       }
 
-      res.redirect('/kind');
+      models.Event.update({'kind': id}, {'kind': ''}, function(err) {
+        if(err) {
+          console.error(err);
+          return res.sendStatus(500);
+        }
+
+        res.redirect('/kind');
+      });
     });
   }
 
