@@ -43,13 +43,7 @@ module.exports = function(app, models) {
         return res.sendStatus(500);
       }
 
-      var data = {
-        'value': event.value,
-        'kind': event.kind,
-        'id': event._id
-      };
-
-      res.json(data);
+      res.redirect('/event');
     });
   }
 
@@ -88,8 +82,68 @@ module.exports = function(app, models) {
     });
   }
 
+  var eventEdit = function(req, res) {
+    var id = req.query.id || req.params.id;
+
+    if(!id) return res.sendStatus(404);
+
+    models.Event.findOne({'_id': id}, function(err, event) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      if(!event) return res.sendStatus(404);
+
+      var data = {
+        'value': event.value,
+        'kind': event.kind,
+        'id': event._id
+      };
+
+      models.Kind.find({}, function(err, kinds) {
+        if(err) {
+          console.error(err);
+          return res.sendStatus(500);
+        }
+
+        res.render('event/edit', {'event': data, 'kinds': kinds});
+      });
+    });
+  }
+
+  var eventUpdate = function(req, res) {
+    var id = req.query.id || req.params.id;
+    var value = req.body.value, kind = req.body.kind;
+
+    models.Event.update({'_id': id}, {'value': value, 'kind': kind}, function(err) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.redirect('/event');
+    });
+  }
+
+  var eventDelete = function(req, res) {
+    var id = req.query.id || req.params.id;
+
+    models.Event.remove({'_id': id}, function(err) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.redirect('/event');
+    });
+  }
+
   app.get('/event', eventRoot);
   app.get('/event/new', eventNew);
   app.post('/event/create', eventCreate);
   app.get('/event/:id(\\d+)/', eventView);
+  app.get('/event/:id(\\d+)/edit', eventEdit);
+  app.post('/event/:id(\\d+)/update', eventUpdate);
+  app.get('/event/:id(\\d+)/delete', eventDelete);
 }

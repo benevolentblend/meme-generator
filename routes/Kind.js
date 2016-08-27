@@ -36,13 +36,7 @@ module.exports = function(app, models) {
         return res.sendStatus(500);
       }
 
-      var data = {
-        'name': kind.name,
-        'url': kind.url,
-        'id': kind._id
-      };
-
-      res.json(data);
+      res.redirect('/kind');
     });
   }
 
@@ -69,8 +63,61 @@ module.exports = function(app, models) {
     });
   }
 
+  var kindEdit = function(req, res) {
+    var id = req.query.id || req.params.id;
+
+    if(!id) return res.sendStatus(404);
+
+    models.Kind.findOne({'_id': id}, function(err, kind) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      if(!kind) return res.sendStatus(404);
+
+      var data = {
+        'name': kind.name,
+        'url': kind.url,
+        'id': kind._id
+      };
+
+      res.render('kind/edit.ejs', {'kind': data});
+    });
+  }
+
+  var kindUpdate = function(req, res) {
+    var id = req.query.id || req.params.id;
+    var name = req.body.name, url = req.body.url;
+
+    models.Kind.update({'_id': id}, {'name': name, 'url': url}, function(err) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.redirect('/kind');
+    });
+  }
+
+  var kindDelete = function(req, res) {
+    var id = req.query.id || req.params.id;
+
+    models.Kind.remove({'_id': id}, function(err) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.redirect('/kind');
+    });
+  }
+
   app.get('/kind', kindRoot);
   app.get('/kind/new', kindNew);
   app.post('/kind/create', kindCreate);
   app.get('/kind/:id(\\d+)/', kindView);
+  app.get('/kind/:id(\\d+)/edit', kindEdit);
+  app.post('/kind/:id(\\d+)/update', kindUpdate);
+  app.get('/kind/:id(\\d+)/delete', kindDelete);
 }

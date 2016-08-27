@@ -1,8 +1,61 @@
-<ul>
-  <% for(var i in scenarios) { %>
-    <li>
-      <a href="/scenario/<%= scenarios[i].id %>"><%= scenarios[i].value %></a>
-    </li>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">Scenarios</h1>
+  </div>
+  <% if(scenarios.length == 0) { %>
+    <div class="panel-body">
+      No scenarios. Create a new one <a href="/scenario/new">here</a>
+    </div>
+  <% } else { %>
+    <div class="list-group">
+      <% for(var i in scenarios) { %>
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-xs-5">
+              <%= scenarios[i].value %>
+            </div>
+            <div class="col-xs-7">
+              <div class="btn-toolbar pull-right">
+                <div class="btn-group">
+                  <a class="btn btn-info" ref="/scenario/<%= scenarios[i].id %>" href="/scenario/<%= scenarios[i].id %>">
+                    <span class="hidden-xs hidden-sm">View</span>
+                    <i class="glyphicon glyphicon-search"></i>
+                  </a>
+                </div>
+                <div class="btn-group">
+                  <a class="btn btn-warning" href="/scenario/<%= scenarios[i].id %>/edit">
+                    <span class="hidden-xs hidden-sm">Edit</span>
+                    <i class="glyphicon glyphicon-wrench"></i>
+                  </a>
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-danger delete-button" data-id="<%= scenarios[i].id %>" data-value="<%= scenarios[i].value %>">
+                    <span class="hidden-xs hidden-sm">Delete</span>
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+    <div class="panel-footer">
+      Create a <a href="/scenario/new">New Scenario</a>
+    </div>
   <% } %>
-</ul>
-<a href="/scenario/new">New</a>
+</div>
+<script>
+$(document).ready(function() {
+  var confirmDelete = function(event) {
+    var $this = $(this);
+
+    if(confirm('Delete scenario: "' + $this.data('value') + '"?')) {
+      location = '/scenario/' + $this.data('id') + '/delete';
+    }
+  }
+
+  $('.delete-button').click(confirmDelete);
+});
+</script>

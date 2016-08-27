@@ -1,0 +1,27 @@
+<h2 class="page-header">Edit Event</h2>
+<form class="form-horizontal" action="/event/<%= event.id%>/update" method="post">
+  <fieldset>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Value</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" name="value" value="<%= event.value %>">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Kind</label>
+      <div class="col-sm-10">
+        <select class="form-control" name="kind">
+          <option value="">(None)</option>
+          <% for(var i in kinds) { %>
+            <option <% if(event.kind == kinds[i].id) {%>selected<% } %> value="<%= kinds[i].id %>"><%= kinds[i].name %></option>
+          <% } %>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <input class="btn btn-primary" type="submit" value="Update">
+      </div>
+    </div>
+  </fieldset>
+</form>

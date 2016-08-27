@@ -1,8 +1,61 @@
-<ul>
-  <% for(var i in events) { %>
-    <li>
-      <a href="/event/<%= events[i].id %>"><%= events[i].value %></a>
-    </li>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">Events</h1>
+  </div>
+  <% if(events.length == 0) { %>
+    <div class="panel-body">
+      No events. Create a new one <a href="/event/new">here</a>
+    </div>
+  <% } else { %>
+    <div class="list-group">
+      <% for(var i in events) { %>
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-xs-5">
+              <%= events[i].value %>
+            </div>
+            <div class="col-xs-7">
+              <div class="btn-toolbar pull-right">
+                <div class="btn-group">
+                  <a class="btn btn-info" ref="/event/<%= events[i].id %>" href="/event/<%= events[i].id %>">
+                    <span class="hidden-xs hidden-sm">View</span>
+                    <i class="glyphicon glyphicon-search"></i>
+                  </a>
+                </div>
+                <div class="btn-group">
+                  <a class="btn btn-warning" href="/event/<%= events[i].id %>/edit">
+                    <span class="hidden-xs hidden-sm">Edit</span>
+                    <i class="glyphicon glyphicon-wrench"></i>
+                  </a>
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-danger delete-button" data-id="<%= events[i].id %>" data-value="<%= events[i].value %>">
+                    <span class="hidden-xs hidden-sm">Delete</span>
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+    <div class="panel-footer">
+      Create a <a href="/event/new">New Event</a>
+    </div>
   <% } %>
-</ul>
-<a href="/event/new">New</a>
+</div>
+<script>
+  $(document).ready(function() {
+    var confirmDelete = function(event) {
+      var $this = $(this);
+
+      if(confirm('Delete event: "' + $this.data('value') + '"?')) {
+        location = '/event/' + $this.data('id') + '/delete';
+      }
+    }
+
+    $('.delete-button').click(confirmDelete);
+  });
+</script>

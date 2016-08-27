@@ -35,12 +35,7 @@ module.exports = function(app, models) {
         return res.sendStatus(500);
       }
 
-      var data = {
-        'value': scenario.value,
-        'id': scenario._id
-      };
-
-      res.json(data);
+      res.redirect('/scenario');
     });
   }
 
@@ -66,9 +61,60 @@ module.exports = function(app, models) {
     });
   }
 
+  var scenarioEdit = function(req, res) {
+    var id = req.query.id || req.params.id;
+
+    if(!id) return res.sendStatus(404);
+
+    models.Scenario.findOne({'_id': id}, function(err, scenario) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      if(!scenario) return res.sendStatus(404);
+
+      var data = {
+        'value': scenario.value,
+        'id': scenario._id
+      };
+
+      res.render('scenario/edit.ejs', {'scenario': data});
+    });
+  }
+
+  var scenarioUpdate = function(req, res) {
+    var id = req.query.id || req.params.id;
+    var value = req.body.value;
+
+    models.Scenario.update({'_id': id}, {'value': value}, function(err) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.redirect('/scenario');
+    });
+  }
+
+  var scenarioDelete = function(req, res) {
+    var id = req.query.id || req.params.id;
+
+    models.Scenario.remove({'_id': id}, function(err) {
+      if(err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
+      res.redirect('/scenario');
+    });
+  }
 
   app.get('/scenario', scenarioRoot);
   app.get('/scenario/new', scenarioNew);
   app.post('/scenario/create', scenarioCreate);
-  app.get('/scenario/:id(\\d+)/', scenarioView);
+  app.get('/scenario/:id(\\d+)', scenarioView);
+  app.get('/scenario/:id(\\d+)/edit', scenarioEdit);
+  app.post('/scenario/:id(\\d+)/update', scenarioUpdate);
+  app.get('/scenario/:id(\\d+)/delete', scenarioDelete);
 };

@@ -1,8 +1,61 @@
-<ul>
-  <% for(var i in kinds) { %>
-    <li>
-      <a href="/kind/<%= kinds[i].id %>"><%= kinds[i].name %></a>
-    </li>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">Kinds</h1>
+  </div>
+  <% if(kinds.length == 0) { %>
+    <div class="panel-body">
+      No kinds. Create a new one <a href="/kind/new">here</a>
+    </div>
+  <% } else { %>
+    <div class="list-group">
+      <% for(var i in kinds) { %>
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-xs-5">
+              <%= kinds[i].name %>
+            </div>
+            <div class="col-xs-7">
+              <div class="btn-toolbar pull-right">
+                <div class="btn-group">
+                  <a class="btn btn-info" ref="/kind/<%= kinds[i].id %>" href="/kind/<%= kinds[i].id %>">
+                    <span class="hidden-xs hidden-sm">View</span>
+                    <i class="glyphicon glyphicon-search"></i>
+                  </a>
+                </div>
+                <div class="btn-group">
+                  <a class="btn btn-warning" href="/kind/<%= kinds[i].id %>/edit">
+                    <span class="hidden-xs hidden-sm">Edit</span>
+                    <i class="glyphicon glyphicon-wrench"></i>
+                  </a>
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-danger delete-button" data-id="<%= kinds[i].id %>" data-name="<%= kinds[i].name %>">
+                    <span class="hidden-xs hidden-sm">Delete</span>
+                    <i class="glyphicon glyphicon-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+    <div class="panel-footer">
+      Create a <a href="/kind/new">New Kind</a>
+    </div>
   <% } %>
-</ul>
-<a href="/kind/new">New</a>
+</div>
+<script>
+$(document).ready(function() {
+  var confirmDelete = function(event) {
+    var $this = $(this);
+
+    if(confirm('Delete kind: "' + $this.data('name') + '"?')) {
+      location = '/kind/' + $this.data('id') + '/delete';
+    }
+  }
+
+  $('.delete-button').click(confirmDelete);
+});
+</script>

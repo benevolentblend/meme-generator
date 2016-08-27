@@ -51,7 +51,7 @@ module.exports = function(app, models) {
               return res.sendStatus(500);
             }
 
-            console.log('Generating image:' + captionedImage);
+            console.log('Generating image: "' + captionedImage + '"');
 
             res.type('jpg').sendFile(captionedImage);
           });

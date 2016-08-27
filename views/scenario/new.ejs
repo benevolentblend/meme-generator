@@ -1,10 +1,16 @@
-<h1>Create Scenario</h1>
-<form class="" action="/scenario/create" method="post">
-  <div class="form-group">
-    <label>Value</label>
-    <input class="form-control" type="text" name="value" placeholder="Your spicy scenario here...">
-  </div>
-  <div class="form-group">
-    <input class="btn btn-primary" type="submit" value="Create">
-  </div>
+<h2 class="page-header">Create Scenario</h2>
+<form class="form-horizontal" action="/scenario/create" method="post">
+  <fieldset>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Value</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" name="value" placeholder="Your spicy scenario here...">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <input class="btn btn-primary" type="submit" value="Create">
+      </div>
+    </div>
+  </fieldset>
 </form>
