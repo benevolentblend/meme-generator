@@ -36,12 +36,19 @@ module.exports = function(app, models) {
           if(!kind) return res.sendStatus(404);
 
           var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
+          var url = kind.url;
+
+          if(!url.endsWith('.jpg') && !url.endsWith('.png')) {
+            url += '.jpg';
+          }
+
+          console.log(url);
 
           if(fileExists(outputFile) && !cached) {
             return res.type('jpg').sendFile(outputFile);
           }
 
-          caption.url(kind.url, {
+          caption.url(url, {
             'caption': scenario.value,
             'bottomCaption': event.value,
             'outputFile': outputFile,
