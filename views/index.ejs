@@ -21,6 +21,12 @@
   </p>
 <% } else { %>
   <p class="lead text-center">Meme URL: <a target="_blank" id="meme-url" href="#">meme/</a></p>
+  <div class="checkbox text-center">
+    <label>
+      <input id="cache" type="checkbox"> Fresh Meme
+    </label>
+  </div>
+  </p>
   <hr>
   <div class="row">
     <div class="col-md-4">
@@ -72,9 +78,9 @@
   $(document).ready(function() {
 
     var senarioList = $('#scenario-list li'), eventList = $('#event-list li'),
-      kindList = $('#kind-list li'), memeURL = $('#meme-url');
+      kindList = $('#kind-list li'), memeURL = $('#meme-url'), cacheCheckBox = $('#cache');
 
-    var url = location.origin, senarioId = '', eventId = '', kindId = '', safeKind = false;
+    var url = location.origin, senarioId = '', eventId = '', kindId = '', safeKind = false, cachedParam = '';
 
     var updateURL = function() {
       var fullURL = url + '/meme';
@@ -83,7 +89,8 @@
       if(senarioId !== '' && eventId !== '') fullURL += '-' + eventId;
       if(senarioId !== '' && eventId !== '' && kindId !== '') fullURL += '-' + kindId;
 
-      fullURL += '.jpg';
+      fullURL += '.jpg' + cachedParam;
+
 
       memeURL.html(fullURL);
       if(senarioId !== '' && eventId !== '' && (kindId !== '' || safeKind)) {
@@ -102,7 +109,6 @@
       $this.addClass('active');
       senarioId = $this.data('id');
       updateURL();
-
     }
 
     var eventItemClick = function (event) {
@@ -133,9 +139,17 @@
       updateURL();
     }
 
+    var cacheCheck = function(event) {
+      var $this = $(this);
+      if($this.prop('checked')) cachedParam = '?cached=false';
+      else cachedParam = '';
+      updateURL();
+    }
+
     senarioList.click(senarioItemClick);
     eventList.click(eventItemClick);
     kindList.click(kindItemClick);
+    cacheCheckBox.change(cacheCheck);
 
     updateURL();
   });
