@@ -29,13 +29,13 @@ module.exports = function(app, models) {
     if(!value) return res.sendStatus(400);
 
     var scenario = new models.Scenario({'value': value});
-    scenario.save(function(err) {
+    scenario.save(function(err, scenario) {
       if(err) {
         console.error(err);
         return res.sendStatus(500);
       }
 
-      res.redirect('/scenario');
+      res.redirect('/scenario/' + scenario.id);
     });
   }
 
@@ -93,7 +93,7 @@ module.exports = function(app, models) {
         return res.sendStatus(500);
       }
 
-      res.redirect('/scenario');
+      res.redirect('/scenario/' + id);
     });
   }
 

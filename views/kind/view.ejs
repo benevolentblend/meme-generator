@@ -1,3 +1,54 @@
-<p>Name: <%= kind.name %></p>
-<p>ID: <%= kind.id %></p>
-<img src="<%= kind.url %>" alt="<%= kind.name %>" />
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Kind
+    <div class="btn-toolbar pull-right">
+      <div class="btn-group">
+        <a class="btn btn-warning" href="/kind/<%= kind.id %>/edit">
+          <span class="hidden-xs hidden-sm">Edit</span>
+          <i class="glyphicon glyphicon-wrench"></i>
+        </a>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-danger delete-button" data-id="<%= kind.id %>" data-name="<%= kind.name %>">
+          <span class="hidden-xs hidden-sm">Delete</span>
+          <i class="glyphicon glyphicon-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Name</td>
+        <td><%= kind.name %></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td><%= kind.id %></td>
+      </tr>
+      <tr>
+        <td>URL</td>
+        <td><a href="/kind/<%= kind.id %>/image.jpg">/kind/<%= kind.id %>/image.jpg</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="panel-body">
+    <img class="img-responsive center-block" src="/kind/<%= kind.id %>/image" alt="<%= kind.name %>" />
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    var confirmDelete = function(event) {
+      var $this = $(this);
+
+      if(confirm('Delete kind: "' + $this.data('name') + '"?')) {
+        location = '/kind/' + $this.data('id') + '/delete';
+      }
+    }
+
+    $('.delete-button').click(confirmDelete);
+  });
+</script>

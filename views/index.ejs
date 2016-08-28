@@ -15,48 +15,52 @@
   </div>
 </div>
 <h1 class="page-header text-center">Build a Meme</h1>
-<div class="text-center">
-  <p class="lead">Meme URL: <a target="_blank" id="meme-url" href="#">meme/</a></p>
-</div>
-<hr>
-<div class="row">
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Scenario</h1>
+<% if(scenarios.length == 0 || events.length == 0 || kinds.length == 0) { %>
+  <p class="lead text-center">
+    The Memes are not ready!!! Create at least on Scenario, Event, and Kind!
+  </p>
+<% } else { %>
+  <p class="lead text-center">Meme URL: <a target="_blank" id="meme-url" href="#">meme/</a></p>
+  <hr>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Scenario</h1>
+        </div>
+        <ul id="scenario-list" class="list-group">
+          <% for(var i in scenarios) { %>
+            <li class="list-group-item" data-id="<%= scenarios[i].id %>"><%= scenarios[i].value %></li>
+          <% } %>
+        </ul>
       </div>
-      <ul id="scenario-list" class="list-group">
-        <% for(var i in scenarios) { %>
-          <li class="list-group-item" data-id="<%= scenarios[i].id %>"><%= scenarios[i].value %></li>
-        <% } %>
-      </ul>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Event</h1>
+        </div>
+        <ul id="event-list" class="list-group">
+          <% for(var i in events) { %>
+            <li class="list-group-item" data-id="<%= events[i].id %>" data-kind="<%= events[i].kind %>"><%= events[i].value %></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Kind</h1>
+        </div>
+        <ul id="kind-list" class="list-group">
+          <% for(var i in kinds) { %>
+            <li class="list-group-item" data-id="<%= kinds[i].id %>"><%= kinds[i].name %></li>
+          <% } %>
+        </ul>
+      </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Event</h1>
-      </div>
-      <ul id="event-list" class="list-group">
-        <% for(var i in events) { %>
-          <li class="list-group-item" data-id="<%= events[i].id %>" data-kind="<%= events[i].kind %>"><%= events[i].value %></li>
-        <% } %>
-      </ul>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Kind</h1>
-      </div>
-      <ul id="kind-list" class="list-group">
-        <% for(var i in kinds) { %>
-          <li class="list-group-item" data-id="<%= kinds[i].id %>"><%= kinds[i].name %></li>
-        <% } %>
-      </ul>
-    </div>
-  </div>
-</div>
+<% } %>
 <style>
   .large-button {
     width: 300px;

@@ -6,7 +6,7 @@ module.exports = function(app, models) {
 
   var memeView = function(req, res) {
     var scenarioId = req.params.scenarioId, eventId = req.params.eventId,
-      kindId = req.params.kindId, cached= req.query.cached;
+      kindId = req.params.kindId, cached = req.query.cached;
 
     if(!scenarioId || !eventId) {
       return res.sendStatus(400);
@@ -39,36 +39,37 @@ module.exports = function(app, models) {
           if(!kind) return res.sendStatus(404);
 
           var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
-          var url = kind.url;
-
-          if(!url.endsWith('.jpg') && !url.endsWith('.png')) {
-            url += '.jpg';
-          }
+          var fullUrl = req.protocol + '://' + req.get('host');
+          var image = '/kind/' + kind.id + '/image.jpg';
+          var url = fullUrl + image;
 
           if(fileExists(outputFile) && !cached) {
             return res.type('jpg').sendFile(outputFile);
           }
 
-          caption.url(url, {
-            'caption': scenario.value,
-            'bottomCaption': event.value,
-            'outputFile': outputFile,
-          }, function(err, captionedImage) {
-            if(err) {
-              console.error(err);
-              return res.sendStatus(500);
-            }
+          else {
+            caption.url(url, {
+              'caption': scenario.value,
+              'bottomCaption': event.value,
+              'outputFile': outputFile,
+            }, function(err, captionedImage) {
+              if(err) {
+                console.error(err);
+                return res.sendStatus(500);
+              }
+              console.log('Generating image: "' + captionedImage + '"');
 
-            console.log('Generating image: "' + captionedImage + '"');
-
-            res.type('jpg').sendFile(captionedImage);
-          });
+              res.type('jpg').sendFile(captionedImage);
+            });
+          }
         });
       });
     });
   }
 
   var randomMeme = function(req, res) {
+    var cached = req.query.cached;
+
     models.Scenario.find({}, function(err, scenarios) {
       if(err) {
         console.error(err);
@@ -98,6 +99,10 @@ module.exports = function(app, models) {
           var filename = '/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg'
           var uri = fullUrl + filename;
 
+          if(cached) {
+            uri += '?cached=false';
+          }
+
           request.get(uri).pipe(res);
         });
       })
@@ -106,6 +111,8 @@ module.exports = function(app, models) {
 
 
   var spicyMeme = function(req, res) {
+    var cached = req.query.cached;
+
     models.Scenario.find({}, function(err, scenarios) {
       if(err) {
         console.error(err);
@@ -127,6 +134,10 @@ module.exports = function(app, models) {
         var fullUrl = req.protocol + '://' + req.get('host');
         var filename = '/meme-' + scenarioId + '-' + eventId + '.jpg'
         var uri = fullUrl + filename;
+
+        if(cached) {
+          uri += '?cached=false';
+        }
 
         request.get(uri).pipe(res);
       });

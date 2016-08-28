@@ -1,7 +1,56 @@
-<p>Value: <%= event.value %></p>
-<p>ID: <%=event.id %></p>
-<% if(typeof kind != 'undefined') { %>
-  <p>Kind: <%= kind.name %></p>
-  <p>Kind ID: <%= kind.id %></p>
-  <img src="<%= kind.url %>" alt="<%= kind.name %>" />
-<% } %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Event
+    <div class="btn-toolbar pull-right">
+      <div class="btn-group">
+        <a class="btn btn-warning" href="/event/<%= event.id %>/edit">
+          <span class="hidden-xs hidden-sm">Edit</span>
+          <i class="glyphicon glyphicon-wrench"></i>
+        </a>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-danger delete-button" data-id="<%= event.id %>" data-value="<%= event.value %>">
+          <span class="hidden-xs hidden-sm">Delete</span>
+          <i class="glyphicon glyphicon-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Value</td>
+        <td><%= event.value %></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td><%= event.id %></td>
+      </tr>
+      <tr>
+        <td>kind: </td>
+        <td><%= typeof kind != 'undefined' ? kind.name : 'None' %></td>
+      </tr>
+    </tbody>
+  </table>
+  <% if(typeof kind != 'undefined') { %>
+    <div class="panel-body">
+      <img class="img-responsive center-block" src="/kind/<%= kind.id %>/image" alt="<%= kind.name %>" />
+    </div>
+  <% } %>
+</div>
+<script>
+  $(document).ready(function() {
+    var confirmDelete = function(event) {
+      var $this = $(this);
+
+      if(confirm('Delete event: "' + $this.data('value') + '"?')) {
+        location = '/event/' + $this.data('id') + '/delete';
+      }
+    }
+
+    $('.delete-button').click(confirmDelete);
+  });
+</script>

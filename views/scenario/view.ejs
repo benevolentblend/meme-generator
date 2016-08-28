@@ -1,2 +1,47 @@
-<p>Value: <%= scenario.value %></p>
-<p>ID: <%= scenario.id %></p>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Scenario
+    <div class="btn-toolbar pull-right">
+      <div class="btn-group">
+        <a class="btn btn-warning" href="/scenario/<%= scenario.id %>/edit">
+          <span class="hidden-xs hidden-sm">Edit</span>
+          <i class="glyphicon glyphicon-wrench"></i>
+        </a>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-danger delete-button" data-id="<%= scenario.id %>" data-value="<%= scenario.value %>">
+          <span class="hidden-xs hidden-sm">Delete</span>
+          <i class="glyphicon glyphicon-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Value</td>
+        <td><%= scenario.value %></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td><%= scenario.id %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  $(document).ready(function() {
+    var confirmDelete = function(event) {
+      var $this = $(this);
+
+      if(confirm('Delete scenario: "' + $this.data('value') + '"?')) {
+        location = '/scenario/' + $this.data('id') + '/delete';
+      }
+    }
+
+    $('.delete-button').click(confirmDelete);
+  });
+</script>

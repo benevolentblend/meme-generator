@@ -1,4 +1,7 @@
 module.exports = {
   'name': 'String',
-  'url': 'String'
+  'img': {
+    'data': 'Buffer',
+    'contentType': 'String'
+  }
 }

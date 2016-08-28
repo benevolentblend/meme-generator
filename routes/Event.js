@@ -37,13 +37,13 @@ module.exports = function(app, models) {
     if(!value) return res.sendStatus(400);
 
     var event = new models.Event({'value': value, 'kind': kind});
-    event.save(function(err) {
+    event.save(function(err, event) {
       if(err) {
         console.error(err);
         return res.sendStatus(500);
       }
 
-      res.redirect('/event');
+      res.redirect('/event/' + event.id);
     });
   }
 
@@ -122,7 +122,7 @@ module.exports = function(app, models) {
         return res.sendStatus(500);
       }
 
-      res.redirect('/event');
+      res.redirect('/event/' + id);
     });
   }
 

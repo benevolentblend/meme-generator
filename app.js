@@ -7,6 +7,7 @@
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var bodyParser = require('body-parser');
+var fileUpload = require('express-fileupload');
 
 var app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -17,6 +18,9 @@ app.use(expressLayouts);
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(express.static(__dirname + '/public'));
+app.use(fileUpload({
+    limits: { fileSize: 5 * 1024 * 1024 },
+}));
 
 var models = require('./database');
 
