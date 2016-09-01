@@ -68,7 +68,6 @@ module.exports = function(app, models) {
         }
         else { // Need to generate it
           console.log("need to generate");
-          imageGenList[outputFile] = true;
           cb(null, data, lock, null);
         }
       },
