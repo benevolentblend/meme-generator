@@ -4,7 +4,15 @@ var request = require('request');
 var fileExists = require('file-exists');
 var async = require("async");
 
-var imageGenList = [];
+
+var Redlock = require("redlock");
+var redisClient = require('redis').createClient(6379, process.env.REDIS||'172.16.1.10');
+
+var redlock = new Redlock([redisClient], {
+  driftFactor: 0.01,
+  retryCount:  500,
+  retryDelay:  10
+});
 
 module.exports = function(app, models) {
 
@@ -46,55 +54,47 @@ module.exports = function(app, models) {
         }, cb);
       },
 
-      // Check if an image is already cached
       function(data, cb) {
+        redlock.lock(outputFile, 1000).then(function(lock) {
+          cb(null, data, lock);
+        });
+      },
+
+      // Check if an image is already cached
+      function(data, lock, cb) {
         if ( fileExists(outputFile) ) {
           console.log("exists, using cache");
-          cb(null, data, outputFile);
+          cb(null, data, lock, outputFile);
         }
         else { // Need to generate it
           console.log("need to generate");
           imageGenList[outputFile] = true;
-          cb(null, data, null);
+          cb(null, data, lock, null);
         }
       },
 
       // Generate if we need to
-      function(data, image, cb) {
+      function(data, lock, image, cb) {
         if ( image )
-          cb(null, image);
+          cb(null, lock, image);
         else {
           var fullUrl = req.protocol + '://' + req.get('host');
           var image = '/kind/' + data.kind.id + '/image.jpg';
           var url = fullUrl + image;
-          console.log("calling caption on ", url);
-          console.log("params => ", {
-            'caption': data.scenario.value,
-            'bottomCaption': data.event.value,
-            'outputFile': outputFile,
-          });
+
           caption.url(url, {
             'caption': data.scenario.value,
             'bottomCaption': data.event.value,
             'outputFile': outputFile,
           }, function(err, img) {
             console.log("generated image");
-            delete imageGenList[outputFile];
-            cb(err, img);
+            cb(err, lock, img);
           });
         }
-      },
-
-      // Wait for generation lock to end
-      function(image, cb) {
-        async.doUntil(function(cb) { cb(null); }, function() {
-          console.log("waiting for lock to end");
-          return imageGenList[outputFile] != true;
-        }, function(err) {
-          cb(null, image);
-        })
       }
-    ], function(err, image) {
+
+    ], function(err, lock, image) {
+      lock.unlock();
       if ( err )
         res.status(500).send(err);
       else {

@@ -19,6 +19,8 @@
     "lodash": "^4.15.0",
     "mongoose": "^4.5.10",
     "mongoose-auto-increment": "^5.0.1",
+    "redis": "^2.6.2",
+    "redlock": "^2.0.0",
     "request": "^2.74.0"
   },
   "engines": {
