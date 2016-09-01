@@ -4,7 +4,7 @@ COPY . /app
 WORKDIR /app
 
 RUN apt-get update
-RUN apt-get install imagemagick ghostscript
+RUN apt-get install -y imagemagick ghostscript
 RUN npm --loglevel warn install
 
 ENV NODE_ENV production
