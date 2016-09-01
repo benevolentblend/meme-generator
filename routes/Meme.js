@@ -2,68 +2,104 @@ var _ = require('lodash');
 var caption = require('caption');
 var request = require('request');
 var fileExists = require('file-exists');
+var async = require("async");
+
+var imageGenList = [];
+
 module.exports = function(app, models) {
 
   var memeView = function(req, res) {
     var scenarioId = req.params.scenarioId, eventId = req.params.eventId,
-      kindId = req.params.kindId, cached = req.query.cached;
+      kindId = req.params.kindId, cached= req.query.cached;
+    var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
+    async.waterfall([
+      function(cb) {
+        async.auto({
+          scenario: function(cb) {
+            models.Scenario.findById(scenarioId).then(function(scenario) {
+              if ( scenario )
+                cb(null, scenario);
+              else
+                cb("Scenario not found");
+            }).then(null, cb);
+          },
 
-    if(!scenarioId || !eventId) {
-      return res.sendStatus(400);
-    }
+          kind: ['event', function(data, cb) {
+            if ( !kindId )
+              kindId = data.event.kind;
+            models.Kind.findById(kindId).then(function(kind) {
+              if ( kind )
+                cb(null, kind);
+              else
+                cb("Kind not found");
+            }).then(null, cb);
+          }],
 
-    models.Scenario.findOne({'_id': scenarioId}, function(err, scenario) {
-      if(err) {
-        console.error(err);
-        return res.sendStatus(500);
-      }
+          event: function(cb) {
+            models.Event.findById(eventId).then(function(event) {
+              if ( event )
+                cb(null, event);
+              else
+                cb("Event not found");
+            }).then(null, cb);
+          }
+        }, cb);
+      },
 
-      if(!scenario) return res.sendStatus(404);
-
-      models.Event.findOne({'_id': eventId}, function(err, event) {
-        if(err) {
-          console.error(err);
-          return res.sendStatus(500);
+      // Check if an image is already cached
+      function(data, cb) {
+        if ( fileExists(outputFile) ) {
+          console.log("exists, using cache");
+          cb(null, data, outputFile);
         }
+        else { // Need to generate it
+          console.log("need to generate");
+          imageGenList[outputFile] = true;
+          cb(null, data, null);
+        }
+      },
 
-        if(!event || (!event.kind && !kindId)) return res.sendStatus(404);
-
-        if(!kindId) kindId = event.kind;
-
-        models.Kind.findOne({'_id': kindId}, function(err, kind) {
-          if(err) {
-            console.error(err);
-            return res.sendStatus(500);
-          }
-
-          if(!kind) return res.sendStatus(404);
-
-          var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
+      // Generate if we need to
+      function(data, image, cb) {
+        if ( image )
+          cb(null, image);
+        else {
           var fullUrl = req.protocol + '://' + req.get('host');
-          var image = '/kind/' + kind.id + '/image.jpg';
+          var image = '/kind/' + data.kind.id + '/image.jpg';
           var url = fullUrl + image;
+          console.log("calling caption on ", url);
+          console.log("params => ", {
+            'caption': data.scenario.value,
+            'bottomCaption': data.event.value,
+            'outputFile': outputFile,
+          });
+          caption.url(url, {
+            'caption': data.scenario.value,
+            'bottomCaption': data.event.value,
+            'outputFile': outputFile,
+          }, function(err, img) {
+            console.log("generated image");
+            delete imageGenList[outputFile];
+            cb(err, img);
+          });
+        }
+      },
 
-          if(fileExists(outputFile) && !cached) {
-            return res.type('jpg').sendFile(outputFile);
-          }
-
-          else {
-            caption.url(url, {
-              'caption': scenario.value,
-              'bottomCaption': event.value,
-              'outputFile': outputFile,
-            }, function(err, captionedImage) {
-              if(err) {
-                console.error(err);
-                return res.sendStatus(500);
-              }
-              console.log('Generating image: "' + captionedImage + '"');
-
-              res.type('jpg').sendFile(captionedImage);
-            });
-          }
-        });
-      });
+      // Wait for generation lock to end
+      function(image, cb) {
+        async.doUntil(function(cb) { cb(null); }, function(fn) {
+          console.log("waiting for lock to end");
+          fn(imageGenList[outputFile] != true);
+        }, function(err) {
+          cb(null, image);
+        })
+      }
+    ], function(err, image) {
+      if ( err )
+        res.status(500).send(err);
+      else {
+        res.type('jpg').sendFile(image);
+      }
     });
   }
 

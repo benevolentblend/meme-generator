@@ -7,7 +7,7 @@
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 
-mongoose.Promise = global.Promise;
+mongoose.Promise = require("bluebird");
 
 mongoose.connect('mongodb://' + (process.env.DATABASE || 'localhost') + '/meme-gen');
 

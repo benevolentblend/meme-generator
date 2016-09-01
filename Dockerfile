@@ -1,4 +1,4 @@
-FROM node:6.0.4
+FROM node:6.5.0
 
 COPY . /app
 WORKDIR /app
