@@ -87,9 +87,9 @@ module.exports = function(app, models) {
 
       // Wait for generation lock to end
       function(image, cb) {
-        async.doUntil(function(cb) { cb(null); }, function(fn) {
+        async.doUntil(function(cb) { cb(null); }, function() {
           console.log("waiting for lock to end");
-          fn(imageGenList[outputFile] != true);
+          return imageGenList[outputFile] != true;
         }, function(err) {
           cb(null, image);
         })
