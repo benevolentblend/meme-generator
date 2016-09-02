@@ -11,7 +11,7 @@ var redisClient = require('redis').createClient(6379, process.env.REDIS||'172.16
 var redlock = new Redlock([redisClient], {
   driftFactor: 0.01,
   retryCount:  500,
-  retryDelay:  10
+  retryDelay:  5
 });
 
 module.exports = function(app, models) {
@@ -63,11 +63,11 @@ module.exports = function(app, models) {
       // Check if an image is already cached
       function(data, lock, cb) {
         if ( fileExists(outputFile) ) {
-          console.log("exists, using cache");
+          console.log(outputFile+": exists, using cache");
           cb(null, data, lock, outputFile);
         }
         else { // Need to generate it
-          console.log("need to generate");
+          console.log(outputFile+": need to generate");
           cb(null, data, lock, null);
         }
       },
@@ -80,13 +80,17 @@ module.exports = function(app, models) {
           var fullUrl = req.protocol + '://' + req.get('host');
           var image = '/kind/' + data.kind.id + '/image.jpg';
           var url = fullUrl + image;
+          console.log(outputFile+" creating image with params: ", {
+            'caption': data.scenario.value,
+            'bottomCaption': data.event.value,
+            'outputFile': outputFile,
+          });
 
           caption.url(url, {
             'caption': data.scenario.value,
             'bottomCaption': data.event.value,
             'outputFile': outputFile,
           }, function(err, img) {
-            console.log("generated image");
             cb(err, lock, img);
           });
         }
