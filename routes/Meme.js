@@ -2,8 +2,9 @@ var _ = require('lodash');
 var caption = require('caption');
 var request = require('request');
 var fileExists = require('file-exists');
-var async = require("async");
-var models = require("../database");
+var async = require('async');
+var models = require('../database');
+var logs = require('../logs');
 
 
 var memeViewQueue = async.queue(function(ctx, done) {
@@ -12,7 +13,7 @@ var memeViewQueue = async.queue(function(ctx, done) {
 
   var scenarioId = req.params.scenarioId, eventId = req.params.eventId,
       kindId = req.params.kindId, cached= req.query.cached;
-  var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + '-' + kindId + '.jpg';
+  var outputFile = '/tmp/meme-' + scenarioId + '-' + eventId + (kindId ? '-' + kindId : '') + '.jpg';
   async.waterfall([
     function(cb) {
       async.auto({
@@ -21,7 +22,7 @@ var memeViewQueue = async.queue(function(ctx, done) {
             if ( scenario )
               cb(null, scenario);
             else
-              cb("Scenario not found");
+              cb('Scenario not found');
           }).then(null, cb);
         },
 
@@ -32,7 +33,7 @@ var memeViewQueue = async.queue(function(ctx, done) {
             if ( kind )
               cb(null, kind);
             else
-              cb("Kind not found");
+              cb('Kind not found');
           }).then(null, cb);
         }],
 
@@ -41,7 +42,7 @@ var memeViewQueue = async.queue(function(ctx, done) {
             if ( event )
               cb(null, event);
             else
-              cb("Event not found");
+              cb('Event not found');
           }).then(null, cb);
         }
       }, cb);
@@ -51,11 +52,11 @@ var memeViewQueue = async.queue(function(ctx, done) {
     // Check if an image is already cached
     function(data, cb) {
       if ( fileExists(outputFile) ) {
-        console.log(outputFile+": exists, using cache");
+        logs.debug(outputFile + ': exists, using cache');
         cb(null, data, outputFile);
       }
       else { // Need to generate it
-        console.log(outputFile+": need to generate");
+        logs.debug(outputFile + ': need to generate');
         cb(null, data, null);
       }
     },
@@ -68,7 +69,7 @@ var memeViewQueue = async.queue(function(ctx, done) {
         var fullUrl = req.protocol + '://' + req.get('host');
         var image = '/kind/' + data.kind.id + '/image.jpg';
         var url = fullUrl + image;
-        console.log(outputFile+" creating image with params: ", {
+        logs.verbose(outputFile + ' creating image with params: ', {
           'caption': data.scenario.value,
           'bottomCaption': data.event.value,
           'outputFile': outputFile,

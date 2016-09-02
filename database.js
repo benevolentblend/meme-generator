@@ -6,8 +6,9 @@
 
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
+var logs = require('./logs');
 
-mongoose.Promise = require("bluebird");
+mongoose.Promise = require('bluebird');
 
 mongoose.connect('mongodb://' + (process.env.DATABASE || 'localhost') + '/meme-gen');
 
@@ -36,7 +37,7 @@ var database = {
 
 db.on('err', console.error.bind(console, 'console error:'));
 db.once('open', function() {
-  console.log('Mongodb connected.');
+  logs.always('Mongodb connected.');
 });
 
 module.exports = database;

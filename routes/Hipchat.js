@@ -78,7 +78,7 @@ module.exports = function(app, models) {
 
         return res.json({
           'color': 'yellow',
-          'message': '<img alt="randommeme" src="' + uri + '">',
+          'message': '<img alt="scipymeme" src="' + uri + '">',
           'notify': false,
           'message_format': 'html'
         });

@@ -22,7 +22,9 @@ app.use(fileUpload({
     limits: { fileSize: 5 * 1024 * 1024 },
 }));
 
+var logs = require('./logs');
 var models = require('./database');
+
 
 require('./routes/index')(app, models);
 
@@ -43,5 +45,6 @@ app.use(function(req, res, next){
 });
 
 app.listen(app.get('port'), function() {
-  console.log("Node app is running at localhost:" + app.get('port'));
+  logs.always('Node app is running at localhost:' + app.get('port'));
+  logs.always('Log Level: ' + logs.getLevel());
 });
