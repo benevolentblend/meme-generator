@@ -1,38 +1,46 @@
-# node-js-sample
+# Meme Generator
+A simple web app to generate random and static memes.
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
+# Scenarios, Events, and kinds
 
-## Running Locally
+Memes need content to generate! A single meme is a combination of a scenario, event, and kind.
 
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
+## Kinds
 
-```sh
-git clone git@github.com:heroku/node-js-sample.git # or clone your own fork
-cd node-js-sample
-npm install
-npm start
-```
+The kind is a image file or URL to the meme.
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+## Scenarios
 
-## Deploying to Heroku
+scenario set the scene for the meme and explain what's happening. This is best formatted in the form, "When [*the scenario*]".
 
-```
-heroku create
-git push heroku master
-heroku open
-```
+## Event
 
-Alternatively, you can deploy your own copy of the app using the web-based flow:
+The event explains what happens during or because of the scenario. This can be formatted as, "and [*the event*]" or "because [*the event*]". An event can also store a default kind, which will allow you to generate memes that have more purpose and meaning.
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+# Generating Memes
 
-## Documentation
+After you have created at least one Kind, Scenario, and Event (although you may want to create more than that!) you can generate either a **Spicy Meme** or a **Random Meme** by navigating to the `/spicymeme` or the `/randommeme` routes in your web browser, or by clicking on the buttons from the front page. You can also create a **Static Meme** with the Meme Builder from the front page.
 
-For more information about using Node.js on Heroku, see these Dev Center articles:
+## Spicy Meme
 
-- [10 Habits of a Happy Node Hacker](https://blog.heroku.com/archives/2014/3/11/node-habits)
-- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
+A Spicy Meme will consist of a random Scenario and Event, with a Kind that matches the Event.
+
+**Notice:** An Event will not be selected for a Spicy Meme if it the Event does not have a default Kind.
+
+## Random Meme
+
+A Spicy Meme will consist of a random Scenario, Event, and Kind. These Memes may not always make sense, but you may get some pretty dank results!
+
+## Static Memes
+
+The Meme Builder will allow you to create and save Memes for the future. The Meme Builder will generate a URL, which you can use to get back to your Meme.
+
+**Notice:** If you change or edit the Scenario, Event, or Kind of your meme, you could loose your meme if/when the cache is reset.
+
+# Cache
+
+Generating a Meme takes a few moments, so in order to deliver your dank Memes in a speedy fashion, we will cache the Memes. In order to regenerate a Meme, add `?cached=false` to the end of the Meme URL. This works for Spicy, Random, and Static Memes.
+
+# URLS
+
+Spicy, Random, and Static Memes can be accessed using a short name `/spicymeme` or with a JPG file extension `/spicymeme.jpg`. 
