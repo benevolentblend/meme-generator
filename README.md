@@ -1,5 +1,6 @@
-# Meme Generator
-A simple web app to generate random and static memes.
+Meme Generator
+---
+An awesome web app to generate random and static memes.
 
 # Scenarios, Events, and kinds
 
