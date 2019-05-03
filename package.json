@@ -1,6 +1,6 @@
 {
   "name": "meme-generator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple web app to generate random and static memes.",
   "main": "app.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "file-exists": "^2.0.0",
     "lodash": "^4.15.0",
     "mongoose": "^4.5.10",
-    "mongoose-auto-increment": "^5.0.1",
+    "mongoose-plugin-autoinc": "^1.1.9",
     "redis": "^2.6.2",
     "redlock": "^2.0.0",
     "request": "^2.74.0"

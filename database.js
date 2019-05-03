@@ -5,16 +5,16 @@
  */
 
 var mongoose = require('mongoose');
-var autoIncrement = require('mongoose-auto-increment');
+var autoIncrement = require('mongoose-plugin-autoinc');
 var logs = require('./logs');
 
 mongoose.Promise = require('bluebird');
 
-mongoose.connect('mongodb://' + (process.env.DATABASE || 'localhost') + '/meme-gen');
+mongoose.connect('mongodb://' + (process.env.DATABASE || 'localhost') + '/meme-gen', {
+  useMongoClient: true,
+});
 
 var db = mongoose.connection;
-
-autoIncrement.initialize(db);
 
 var ScenarioSchema = mongoose.Schema(require('./models/Scenario'));
 var EventSchema = mongoose.Schema(require('./models/Event'));
