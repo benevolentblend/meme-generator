@@ -10,7 +10,7 @@ var logs = require('./logs');
 
 mongoose.Promise = require('bluebird');
 
-mongoose.connect('mongodb://' + (process.env.DATABASE || 'localhost') + '/meme-gen', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost', {
   useMongoClient: true,
 });
 
